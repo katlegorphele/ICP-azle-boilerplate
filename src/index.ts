@@ -67,7 +67,16 @@ export default Server(() => {
     });
 
     // Delete a message
-    
+    app.delete('/messages/:id', (req, res) => {
+        const messageId = req.params.id;
+        const deletedMessage = messageStorage.remove(messageId);
+        if ("None" in deletedMessage) {
+            res.status(404).send(`update failed. message with id ${messageId} not found`);
+        } else {
+            res.json(deletedMessage.Some)
+        }
+
+    })
 
 
     return app.listen();
