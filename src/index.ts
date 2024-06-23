@@ -1,6 +1,6 @@
 // cannister code goes here
 import {v4 as uuidv4} from 'uuid'; // Used to generate uuid for messages
-import { Server, StableBTreeMap, ic } from 'azle'; //
+import { Server, StableBTreeMap, ic, update } from 'azle'; //
 import express from 'express';
 
 /**
@@ -53,7 +53,22 @@ export default Server(() => {
     });
 
     // Updating a message
+    app.put('/messages/:id', (req, res) => {
+        const messageId = req.params.id;
+        const messageOpt = messageStorage.get(messageId);
+        if ("None" in messageOpt) {
+            res.status(404).send(`update failed. message with id ${messageId} not found`);
+        } else {
+            const message = messageOpt.Some;
+            const updatedMessage = {...message, ...req.body, updatedAt: getCurrentDate()};
+            messageStorage.insert(message.id, updatedMessage);
+            res.json(updatedMessage);
+        }
+    });
+
+    // Delete a message
     
+
 
     return app.listen();
 });
